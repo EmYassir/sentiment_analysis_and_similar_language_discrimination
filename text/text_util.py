@@ -27,12 +27,11 @@ class Text_Util:
     def __init__(self):
         self._scanned_words = 0
         self._lemmatizer = WordNetLemmatizer()
-        self._stemmer = SnowballStemmer("english", ignore_stopwords=True)
-        #self._spell_checker = SpellChecker()
+        self._stemmer_english = SnowballStemmer("english", ignore_stopwords=True)
+        self._stemmer_french = SnowballStemmer("french", ignore_stopwords=True)
         self._stop_words = set(stopwords.words('english'))
         self._replace_by_space = re.compile('[/(){}\[\]\|@_]')
         self._bad_symbols = re.compile('[^0-9a-z #+_=-]')
-        #self._tokenizer = RegexpTokenizer(r'[\d.,]+|[A-Z][.A-Z]+\b\.*|\w+|\S')
         self._tokenizer = RegexpTokenizer(r'\w+')
         self._urls = {'www': 1, 'http': 2, 'https': 3, 'com':4}
     
@@ -104,15 +103,7 @@ class Text_Util:
             if 1 < len(token):
                 words.append(token)
         return words
-   
-    '''
-    def _spell(self, tokenized_comment):
-        words = []
-        for token in tokenized_comment:
-            word = self._spell_checker.correction(token)
-            words.append(word)
-        return words
-    '''
+
     def _lemmatize(self, tokenized_comment):
         lemmas = []
         for token in tokenized_comment:
@@ -123,7 +114,7 @@ class Text_Util:
     def _stem(self, tokenized_comment):
         stems = []
         for token in tokenized_comment:
-            stem = self._stemmer.stem(token)
+            stem = self._stemmer_english.stem(token)
             stems.append(stem)
         return stems
     
