@@ -30,6 +30,8 @@ class Text_Util:
         self._stemmer_english = SnowballStemmer("english", ignore_stopwords=True)
         self._stemmer_french = SnowballStemmer("french", ignore_stopwords=True)
         self._stop_words = set(stopwords.words('english'))
+        self._stop_words_french = set(stopwords.words('french'))
+        self._stop_words_spanish = set(stopwords.words('spanish'))
         self._replace_by_space = re.compile('[/(){}\[\]\|@_]')
         self._bad_symbols = re.compile('[^0-9a-z #+_=-]')
         self._tokenizer = RegexpTokenizer(r'\w+')
@@ -45,6 +47,12 @@ class Text_Util:
      
     def _remove_stop_words(self, tokenized_comment):
         return [w for w in tokenized_comment if w not in self._stop_words]
+
+    def _remove_stop_words_french(self, tokenized_comment):
+        return [w for w in tokenized_comment if w not in self._stop_words_french]
+
+    def _remove_stop_words_spanish(self, tokenized_comment):
+        return [w for w in tokenized_comment if w not in self._stop_words_spanish]
     
     
     def _remove_non_alpha(self, tokenized_comment):
@@ -141,11 +149,50 @@ class Text_Util:
             aux = self._tokenizer.tokenize(comment.lower())
             self._scanned_words += len(aux)
             aux = self._remove_stop_words(aux)   # step1
-            aux = self._remove_url_extra(aux)    # step2
-            aux = self._remove_non_alpha(aux)    # step3
+            # aux = self._remove_url_extra(aux)    # step2
+            # aux = self._remove_non_alpha(aux)    # step3
             aux = self._lemmatize(aux)           # step4
-            aux = self._remove_small_words(aux)  # step5
-            aux = self._stem(aux)                # step6     
+            # aux = self._remove_small_words(aux)  # step5
+            # aux = self._stem(aux)                # step6
+            results.append(aux)
+        return np.array(results)
+
+    def get_preprocessed_tokenized_sentences_dsl(self, data):
+        # 'data' is an array of comments
+        n = data.shape[0]
+        results = []
+        for i in range(n):
+            comment = data[i]
+            comment = comment.replace('_', ' ')
+            comment = self._lower_chars(comment)
+            aux = self._tokenizer.tokenize(comment.lower())
+            self._scanned_words += len(aux)
+            aux = self._remove_stop_words_french(aux)   # step1
+            # aux = self._remove_url_extra(aux)    # step2
+            # aux = self._remove_non_alpha(aux)    # step3
+            # aux = self._lemmatize(aux)           # step4
+            # aux = self._remove_small_words(aux)  # step5
+            # aux = self._stem(aux)                # step6
+            results.append(aux)
+        return np.array(results)
+
+    def get_preprocessed_tokenized_sentences_dsl2(self, data):
+        # 'data' is an array of comments
+        n = data.shape[0]
+        results = []
+        for i in range(n):
+            comment = data[i]
+            comment = comment.replace('_', ' ')
+            comment = self._lower_chars(comment)
+            aux = self._tokenizer.tokenize(comment.lower())
+            self._scanned_words += len(aux)
+            aux = self._remove_stop_words_french(aux)   # step1
+            aux = self._remove_stop_words_spanish(aux)  # step1
+            # aux = self._remove_url_extra(aux)    # step2
+            # aux = self._remove_non_alpha(aux)    # step3
+            # aux = self._lemmatize(aux)           # step4
+            # aux = self._remove_small_words(aux)  # step5
+            # aux = self._stem(aux)                # step6
             results.append(aux)
         return np.array(results)
     
