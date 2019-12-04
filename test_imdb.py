@@ -114,6 +114,10 @@ for k, v in classifiers.items():
     print('Predicting ...')
     y_pred = v.predict(X_val)
     print('Accuracy: %f' %(np.mean(y_pred == y_val)))
+    for l in sorted_labels:
+        indexes = np.argwhere(y_val == l)
+        print('Accuracy for label %s: %f' %(l, np.mean(y_pred[indexes] == y_val[indexes])))
+    print(classification_report(y_pred, y_val))
 
 print('Calculating test scores...')
 for k, v in classifiers.items():
@@ -123,11 +127,8 @@ for k, v in classifiers.items():
     print('Predicting ...')
     y_pred = v.predict(X_test)
     print('Accuracy: %f' %(np.mean(y_pred == y_test)))
+    for l in sorted_labels:
+        indexes = np.argwhere(y_test == l)
+        print('Accuracy for label %s: %f' %(l, np.mean(y_pred[indexes] == y_test[indexes])))
+    print(classification_report(y_pred, y_test))
     
-    
-
-            
-            
-            
-
-            
